@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Zap, Users, Target } from 'lucide-react';
+import { Shield, Zap, Users, Target, Settings } from 'lucide-react';
+import AdminDesignPopup from './AdminDesignPopup';
 
 interface HomeContent {
   title: string;
@@ -82,6 +82,18 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-valorant-red/20 to-transparent"></div>
         <div className="relative container mx-auto px-4 py-16 text-center">
+          {/* Admin Design Button - Links boven */}
+          <div className="absolute top-4 left-4">
+            <AdminDesignPopup>
+              <Button 
+                className="bg-valorant-red hover:bg-valorant-accent text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 valorant-glow"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Admin
+              </Button>
+            </AdminDesignPopup>
+          </div>
+
           {isAdmin && (
             <div className="absolute top-4 right-4">
               <Button 
