@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,19 +6,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Save, RotateCcw, Plus, Minus, Palette, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useDesignSettings } from '@/hooks/useDesignSettings';
+import ColorPicker from './ColorPicker';
 
 interface AdminPanelProps {
   onBack: () => void;
-}
-
-interface ColorScheme {
-  primary: string;
-  secondary: string;
-  accent: string;
-  background: string;
 }
 
 interface ContentBlock {
@@ -32,20 +25,8 @@ interface ContentBlock {
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
   const { toast } = useToast();
+  const { settings, loading, updateSetting } = useDesignSettings();
   
-  const [colors, setColors] = useState<ColorScheme>({
-    primary: '#FF4656',
-    secondary: '#0F1419',
-    accent: '#F94555',
-    background: '#1E2328'
-  });
-
-  const [siteContent, setSiteContent] = useState({
-    title: 'VALORANT',
-    description: 'Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.',
-    heroImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5'
-  });
-
   const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>([
     {
       id: '1',
@@ -65,34 +46,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
 
   const [previewMode, setPreviewMode] = useState(false);
 
-  const handleColorChange = (colorType: keyof ColorScheme, value: string) => {
-    setColors(prev => ({
-      ...prev,
-      [colorType]: value
-    }));
+  const handleColorChange = async (colorType: string, value: string) => {
+    await updateSetting(colorType, value);
   };
 
-  const handleSaveSettings = () => {
-    // In een echte app zou dit naar de database gaan
-    console.log('Saving settings:', { colors, siteContent, contentBlocks });
-    toast({
-      title: "Instellingen opgeslagen",
-      description: "Je wijzigingen zijn succesvol opgeslagen.",
-    });
+  const handleContentChange = async (field: string, value: string) => {
+    await updateSetting(field, value);
   };
 
-  const handleResetToDefaults = () => {
-    setColors({
-      primary: '#FF4656',
-      secondary: '#0F1419',
-      accent: '#F94555',
-      background: '#1E2328'
-    });
-    setSiteContent({
-      title: 'VALORANT',
-      description: 'Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.',
-      heroImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5'
-    });
+  const handleResetToDefaults = async () => {
+    const defaultSettings = {
+      primary_color: '#FF4656',
+      secondary_color: '#0F1419',
+      accent_color: '#F94555',
+      background_color: '#1E2328',
+      site_title: 'VALORANT',
+      site_description: 'Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.'
+    };
+
+    for (const [key, value] of Object.entries(defaultSettings)) {
+      await updateSetting(key, value);
+    }
+
     toast({
       title: "Standaardwaarden hersteld",
       description: "Alle instellingen zijn teruggezet naar de standaardwaarden.",
@@ -120,6 +95,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
     ));
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-valorant-dark text-valorant-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-valorant-red mx-auto mb-4"></div>
+          <p className="text-xl">Instellingen laden...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-valorant-dark text-valorant-white p-6">
       <div className="max-w-6xl mx-auto">
@@ -136,7 +122,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             </Button>
             <div>
               <h1 className="text-3xl font-bold valorant-text-glow">Admin Paneel</h1>
-              <p className="text-gray-400">Beheer je VALORANT website</p>
+              <p className="text-gray-400">Beheer je VALORANT website - Wijzigingen worden automatisch opgeslagen</p>
             </div>
           </div>
           
@@ -154,14 +140,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               className="border-gray-500 text-gray-400 hover:bg-gray-500 hover:text-white"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              Reset
-            </Button>
-            <Button 
-              onClick={handleSaveSettings}
-              className="admin-button"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Opslaan
+              Reset naar Standaard
             </Button>
           </div>
         </div>
@@ -189,101 +168,55 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               <CardHeader>
                 <CardTitle className="text-valorant-white">Kleurenschema Aanpassen</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Pas de kleuren van je website aan om een unieke look te creëren.
+                  Kies uit voorgedefinieerde kleuren of voer een eigen hex code in. Wijzigingen worden automatisch opgeslagen en toegepast.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="primary-color" className="text-valorant-white">Primaire Kleur</Label>
-                      <div className="flex gap-2 mt-2">
-                        <Input
-                          id="primary-color"
-                          type="color"
-                          value={colors.primary}
-                          onChange={(e) => handleColorChange('primary', e.target.value)}
-                          className="w-16 h-10 p-1 border-valorant-red/30"
-                        />
-                        <Input
-                          value={colors.primary}
-                          onChange={(e) => handleColorChange('primary', e.target.value)}
-                          className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="secondary-color" className="text-valorant-white">Secundaire Kleur</Label>
-                      <div className="flex gap-2 mt-2">
-                        <Input
-                          id="secondary-color"
-                          type="color"
-                          value={colors.secondary}
-                          onChange={(e) => handleColorChange('secondary', e.target.value)}
-                          className="w-16 h-10 p-1 border-valorant-red/30"
-                        />
-                        <Input
-                          value={colors.secondary}
-                          onChange={(e) => handleColorChange('secondary', e.target.value)}
-                          className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                        />
-                      </div>
-                    </div>
-                  </div>
+              <CardContent className="space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <ColorPicker
+                    label="Primaire Kleur"
+                    value={settings.primary_color}
+                    onChange={(value) => handleColorChange('primary_color', value)}
+                  />
                   
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="accent-color" className="text-valorant-white">Accent Kleur</Label>
-                      <div className="flex gap-2 mt-2">
-                        <Input
-                          id="accent-color"
-                          type="color"
-                          value={colors.accent}
-                          onChange={(e) => handleColorChange('accent', e.target.value)}
-                          className="w-16 h-10 p-1 border-valorant-red/30"
-                        />
-                        <Input
-                          value={colors.accent}
-                          onChange={(e) => handleColorChange('accent', e.target.value)}
-                          className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="background-color" className="text-valorant-white">Achtergrond Kleur</Label>
-                      <div className="flex gap-2 mt-2">
-                        <Input
-                          id="background-color"
-                          type="color"
-                          value={colors.background}
-                          onChange={(e) => handleColorChange('background', e.target.value)}
-                          className="w-16 h-10 p-1 border-valorant-red/30"
-                        />
-                        <Input
-                          value={colors.background}
-                          onChange={(e) => handleColorChange('background', e.target.value)}
-                          className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <ColorPicker
+                    label="Secundaire Kleur"
+                    value={settings.secondary_color}
+                    onChange={(value) => handleColorChange('secondary_color', value)}
+                  />
+                  
+                  <ColorPicker
+                    label="Accent Kleur"
+                    value={settings.accent_color}
+                    onChange={(value) => handleColorChange('accent_color', value)}
+                  />
+                  
+                  <ColorPicker
+                    label="Achtergrond Kleur"
+                    value={settings.background_color}
+                    onChange={(value) => handleColorChange('background_color', value)}
+                  />
                 </div>
                 
                 {/* Color Preview */}
-                <div className="mt-6">
-                  <Label className="text-valorant-white">Preview</Label>
-                  <div className="grid grid-cols-4 gap-4 mt-2">
-                    {Object.entries(colors).map(([name, color]) => (
+                <div className="mt-8">
+                  <Label className="text-valorant-white text-lg mb-4 block">Live Preview</Label>
+                  <div className="grid grid-cols-4 gap-4">
+                    {[
+                      { name: 'Primair', color: settings.primary_color },
+                      { name: 'Secundair', color: settings.secondary_color },
+                      { name: 'Accent', color: settings.accent_color },
+                      { name: 'Achtergrond', color: settings.background_color }
+                    ].map(({ name, color }) => (
                       <div key={name} className="text-center">
                         <div 
-                          className="w-full h-16 rounded-lg border-2 border-gray-600"
+                          className="w-full h-20 rounded-lg border-2 border-gray-600 mb-2"
                           style={{ backgroundColor: color }}
                         ></div>
-                        <Badge variant="outline" className="mt-2 text-xs">
+                        <Badge variant="outline" className="text-valorant-white border-valorant-red">
                           {name}
                         </Badge>
+                        <p className="text-xs text-gray-400 mt-1">{color}</p>
                       </div>
                     ))}
                   </div>
@@ -298,7 +231,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
               <CardHeader>
                 <CardTitle className="text-valorant-white">Hoofdcontent Bewerken</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Bewerk de hoofdtekst en afbeeldingen van je website.
+                  Bewerk de hoofdtekst van je website. Wijzigingen worden automatisch opgeslagen.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -306,8 +239,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                   <Label htmlFor="site-title" className="text-valorant-white">Website Titel</Label>
                   <Input
                     id="site-title"
-                    value={siteContent.title}
-                    onChange={(e) => setSiteContent(prev => ({ ...prev, title: e.target.value }))}
+                    value={settings.site_title}
+                    onChange={(e) => handleContentChange('site_title', e.target.value)}
                     className="mt-2 bg-valorant-dark border-valorant-red/30 text-valorant-white"
                   />
                 </div>
@@ -316,34 +249,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                   <Label htmlFor="site-description" className="text-valorant-white">Beschrijving</Label>
                   <Textarea
                     id="site-description"
-                    value={siteContent.description}
-                    onChange={(e) => setSiteContent(prev => ({ ...prev, description: e.target.value }))}
+                    value={settings.site_description}
+                    onChange={(e) => handleContentChange('site_description', e.target.value)}
                     className="mt-2 bg-valorant-dark border-valorant-red/30 text-valorant-white"
                     rows={4}
                   />
-                </div>
-                
-                <div>
-                  <Label htmlFor="hero-image" className="text-valorant-white">Hero Afbeelding URL</Label>
-                  <Input
-                    id="hero-image"
-                    value={siteContent.heroImage}
-                    onChange={(e) => setSiteContent(prev => ({ ...prev, heroImage: e.target.value }))}
-                    className="mt-2 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                  />
-                  {siteContent.heroImage && (
-                    <img 
-                      src={siteContent.heroImage} 
-                      alt="Hero preview" 
-                      className="mt-2 w-full max-w-md h-32 object-cover rounded-lg border border-valorant-red/30"
-                    />
-                  )}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Content Blocks Tab */}
+          {/* Content Blocks Tab - keeping existing functionality */}
           <TabsContent value="blocks">
             <Card className="bg-valorant-light border-valorant-red/30">
               <CardHeader>

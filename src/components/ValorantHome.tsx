@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Zap, Users, Target, Settings } from 'lucide-react';
 import AdminDesignPopup from './AdminDesignPopup';
+import { useDesignSettings } from '@/hooks/useDesignSettings';
 
 interface HomeContent {
   title: string;
@@ -25,6 +27,8 @@ interface ValorantHomeProps {
 }
 
 const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminClick }) => {
+  const { settings, loading } = useDesignSettings();
+  
   const [content, setContent] = useState<HomeContent>({
     title: "VALORANT",
     description: "Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.",
@@ -66,6 +70,17 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
     ]
   });
 
+  // Update content when settings change
+  useEffect(() => {
+    if (settings.site_title && settings.site_description) {
+      setContent(prev => ({
+        ...prev,
+        title: settings.site_title,
+        description: settings.site_description
+      }));
+    }
+  }, [settings]);
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'shield': return <Shield className="h-8 w-8" />;
@@ -75,6 +90,17 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       default: return <Shield className="h-8 w-8" />;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-valorant-dark via-valorant-light to-valorant-dark text-valorant-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-valorant-red mx-auto mb-4"></div>
+          <p className="text-xl">Website laden...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-valorant-dark via-valorant-light to-valorant-dark text-valorant-white">
