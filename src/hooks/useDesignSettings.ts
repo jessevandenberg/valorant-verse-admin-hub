@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -24,8 +23,17 @@ export const useDesignSettings = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const applyAllColors = (settings: DesignSettings) => {
+    Object.entries(settings).forEach(([key, value]) => {
+      if (key.includes('_color')) {
+        applyCSSVariables(key, value);
+      }
+    });
+  };
+
   const loadSettings = async () => {
     try {
+      console.log('Loading settings...');
       const { data, error } = await supabase
         .from('design_settings')
         .select('setting_name, setting_value');
@@ -33,11 +41,13 @@ export const useDesignSettings = () => {
       if (error) throw error;
 
       if (data) {
+        console.log('Settings data:', data);
         const settingsObj: any = {};
         data.forEach(item => {
           settingsObj[item.setting_name] = item.setting_value;
         });
         setSettings(settingsObj);
+        applyAllColors(settingsObj);
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -53,6 +63,7 @@ export const useDesignSettings = () => {
 
   const updateSetting = async (settingName: string, settingValue: string) => {
     try {
+      console.log('Updating setting:', settingName, settingValue);
       const { error } = await supabase
         .from('design_settings')
         .upsert({ 
@@ -62,17 +73,17 @@ export const useDesignSettings = () => {
 
       if (error) throw error;
 
-      setSettings(prev => ({
-        ...prev,
+      const newSettings = {
+        ...settings,
         [settingName]: settingValue
-      }));
-
-      // Apply CSS variables immediately
-      applyCSSVariables(settingName, settingValue);
+      };
+      
+      setSettings(newSettings);
+      applyAllColors(newSettings);
 
       toast({
         title: "Instelling opgeslagen",
-        description: "De wijziging is succesvol opgeslagen.",
+        description: "De wijziging is succesvol opgeslagen en toegepast.",
       });
     } catch (error) {
       console.error('Error updating setting:', error);
@@ -86,31 +97,48 @@ export const useDesignSettings = () => {
 
   const applyCSSVariables = (settingName: string, settingValue: string) => {
     const root = document.documentElement;
+    const rgb = hexToRgb(settingValue);
+    
+    if (!rgb) {
+      console.error('Invalid color value:', settingValue);
+      return;
+    }
+
+    console.log('Applying color:', settingName, settingValue, rgb);
     
     switch (settingName) {
       case 'primary_color':
-        const primaryRgb = hexToRgb(settingValue);
-        if (primaryRgb) {
-          root.style.setProperty('--primary', `${primaryRgb.r} ${primaryRgb.g} ${primaryRgb.b}`);
-        }
+        root.style.setProperty('--primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'secondary_color':
-        const secondaryRgb = hexToRgb(settingValue);
-        if (secondaryRgb) {
-          root.style.setProperty('--secondary', `${secondaryRgb.r} ${secondaryRgb.g} ${secondaryRgb.b}`);
-        }
+        root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'accent_color':
-        const accentRgb = hexToRgb(settingValue);
-        if (accentRgb) {
-          root.style.setProperty('--accent', `${accentRgb.r} ${accentRgb.g} ${accentRgb.b}`);
-        }
+        root.style.setProperty('--accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'background_color':
-        const backgroundRgb = hexToRgb(settingValue);
-        if (backgroundRgb) {
-          root.style.setProperty('--background', `${backgroundRgb.r} ${backgroundRgb.g} ${backgroundRgb.b}`);
-        }
+        root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        
+        // Calculate a slightly lighter version of the background color for the gradient
+        const lighterR = Math.min(rgb.r + 20, 255);
+        const lighterG = Math.min(rgb.g + 20, 255);
+        const lighterB = Math.min(rgb.b + 20, 255);
+        
+        const gradientStyle = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
+        console.log('Applying gradient:', gradientStyle);
+        
+        // Update the body background gradient
+        document.body.style.background = gradientStyle;
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
         break;
     }
   };
@@ -126,16 +154,33 @@ export const useDesignSettings = () => {
 
   useEffect(() => {
     loadSettings();
-  }, []);
 
-  useEffect(() => {
-    // Apply all CSS variables on settings change
-    Object.entries(settings).forEach(([key, value]) => {
-      if (key.includes('_color')) {
-        applyCSSVariables(key, value);
-      }
-    });
-  }, [settings]);
+    // Subscribe to real-time updates
+    const subscription = supabase
+      .channel('design_settings_changes')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'design_settings' 
+        }, 
+        (payload) => {
+          console.log('Real-time update received:', payload);
+          const { setting_name, setting_value } = payload.new as { setting_name: string; setting_value: string };
+          const newSettings = {
+            ...settings,
+            [setting_name]: setting_value
+          };
+          setSettings(newSettings);
+          applyAllColors(newSettings);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return {
     settings,

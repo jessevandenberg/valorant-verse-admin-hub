@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,7 +54,10 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    background: linear-gradient(135deg, #0F1419 0%, #1E2328 100%);
+    min-height: 100vh;
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -73,6 +75,10 @@
   }
   
   .admin-button {
-    @apply bg-valorant-red hover:bg-valorant-accent text-white px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 valorant-glow;
+    @apply bg-primary hover:bg-accent text-primary-foreground px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 valorant-glow;
+  }
+
+  .bg-gradient {
+    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--secondary)) 100%);
   }
 }

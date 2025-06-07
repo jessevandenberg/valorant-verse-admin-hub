@@ -172,53 +172,95 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <ColorPicker
-                    label="Primaire Kleur"
-                    value={settings.primary_color}
-                    onChange={(value) => handleColorChange('primary_color', value)}
-                  />
-                  
-                  <ColorPicker
-                    label="Secundaire Kleur"
-                    value={settings.secondary_color}
-                    onChange={(value) => handleColorChange('secondary_color', value)}
-                  />
-                  
-                  <ColorPicker
-                    label="Accent Kleur"
-                    value={settings.accent_color}
-                    onChange={(value) => handleColorChange('accent_color', value)}
-                  />
-                  
-                  <ColorPicker
-                    label="Achtergrond Kleur"
-                    value={settings.background_color}
-                    onChange={(value) => handleColorChange('background_color', value)}
-                  />
+                {/* Background Colors Section */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-valorant-white border-b border-valorant-red/30 pb-2">
+                    Achtergrond Kleuren
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <ColorPicker
+                      label="Hoofd Achtergrond"
+                      value={settings.background_color}
+                      onChange={(value) => handleColorChange('background_color', value)}
+                    />
+                    
+                    <ColorPicker
+                      label="Secundaire Achtergrond"
+                      value={settings.secondary_color}
+                      onChange={(value) => handleColorChange('secondary_color', value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Button Colors Section */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-valorant-white border-b border-valorant-red/30 pb-2">
+                    Button & Accent Kleuren
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <ColorPicker
+                      label="Primaire Button Kleur"
+                      value={settings.primary_color}
+                      onChange={(value) => handleColorChange('primary_color', value)}
+                    />
+                    
+                    <ColorPicker
+                      label="Accent Kleur"
+                      value={settings.accent_color}
+                      onChange={(value) => handleColorChange('accent_color', value)}
+                    />
+                  </div>
                 </div>
                 
                 {/* Color Preview */}
                 <div className="mt-8">
-                  <Label className="text-valorant-white text-lg mb-4 block">Live Preview</Label>
-                  <div className="grid grid-cols-4 gap-4">
-                    {[
-                      { name: 'Primair', color: settings.primary_color },
-                      { name: 'Secundair', color: settings.secondary_color },
-                      { name: 'Accent', color: settings.accent_color },
-                      { name: 'Achtergrond', color: settings.background_color }
-                    ].map(({ name, color }) => (
-                      <div key={name} className="text-center">
-                        <div 
-                          className="w-full h-20 rounded-lg border-2 border-gray-600 mb-2"
-                          style={{ backgroundColor: color }}
-                        ></div>
-                        <Badge variant="outline" className="text-valorant-white border-valorant-red">
-                          {name}
-                        </Badge>
-                        <p className="text-xs text-gray-400 mt-1">{color}</p>
+                  <h3 className="text-xl font-bold text-valorant-white border-b border-valorant-red/30 pb-2 mb-4">
+                    Live Preview
+                  </h3>
+                  <div className="grid grid-cols-2 gap-8">
+                    {/* Background Colors Preview */}
+                    <div className="space-y-4">
+                      <h4 className="text-valorant-white font-semibold">Achtergrond Kleuren</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        {[
+                          { name: 'Hoofd Achtergrond', color: settings.background_color },
+                          { name: 'Secundaire Achtergrond', color: settings.secondary_color }
+                        ].map(({ name, color }) => (
+                          <div key={name} className="text-center">
+                            <div 
+                              className="w-full h-20 rounded-lg border-2 border-gray-600 mb-2"
+                              style={{ backgroundColor: color }}
+                            ></div>
+                            <Badge variant="outline" className="text-valorant-white border-valorant-red">
+                              {name}
+                            </Badge>
+                            <p className="text-xs text-gray-400 mt-1">{color}</p>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+
+                    {/* Button Colors Preview */}
+                    <div className="space-y-4">
+                      <h4 className="text-valorant-white font-semibold">Button & Accent Kleuren</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        {[
+                          { name: 'Primaire Button', color: settings.primary_color },
+                          { name: 'Accent', color: settings.accent_color }
+                        ].map(({ name, color }) => (
+                          <div key={name} className="text-center">
+                            <div 
+                              className="w-full h-20 rounded-lg border-2 border-gray-600 mb-2"
+                              style={{ backgroundColor: color }}
+                            ></div>
+                            <Badge variant="outline" className="text-valorant-white border-valorant-red">
+                              {name}
+                            </Badge>
+                            <p className="text-xs text-gray-400 mt-1">{color}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>

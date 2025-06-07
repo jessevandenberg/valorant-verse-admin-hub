@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+# Valorant Info Website
 
-## Project info
+## Overview
+This website serves as a modern, interactive platform for Valorant information and updates. Built with cutting-edge web technologies, it provides an engaging user experience through smooth animations and a clean, intuitive interface. The project showcases Valorant game data, agent information, and updates in an accessible and visually appealing manner.
 
-**URL**: https://lovable.dev/projects/c5f6b9d3-4de8-4fe8-b524-311ab65d11f1
+## Key Features
+- **Interactive Animations**: Smooth scroll-based animations using Framer Motion
+- **Responsive Design**: Optimized for all devices from mobile to desktop
+- **Modern UI Components**: Built with React and styled using Tailwind CSS
+- **Performance Optimized**: Fast loading times and smooth interactions
+- **Dynamic Content**: Real-time updates through Supabase integration
+- **Customizable Theme**: Dynamic color scheme management through admin panel
 
-## How can I edit this code?
+## Technology Stack
+### Frontend
+- Vite
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- React Icons
+- Shadcn UI Components
 
-There are several ways of editing your application.
+### Backend & Database
+- Supabase
+  - Real-time subscriptions
+  - Database management
+  - Authentication
 
-**Use Lovable**
+### Development Tools
+- Visual Studio Code
+- Git & GitHub
+- NPM
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c5f6b9d3-4de8-4fe8-b524-311ab65d11f1) and start prompting.
+## Installation
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
+Ensure you have the following installed:
+- Node.js (LTS version)
+- npm (comes with Node.js)
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Steps
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/valorant-info.git
+cd valorant-info
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies
+```bash
+npm install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Start the development server
+```bash
+npm run dev
+```
+Open your browser and navigate to `http://localhost:5173`
 
-**Use GitHub Codespaces**
+## Configuration
+- Environment variables can be added in `.env` file
+- Vite configuration can be modified in `vite.config.ts`
+- Tailwind CSS configuration is available in `tailwind.config.js`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Available Scripts
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Starts the development server |
+| `npm run build` | Creates a production build |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Runs the linter to check code quality |
 
-## What technologies are used for this project?
+## Project Structure
+```
+valorant-info/
+├── src/              # Source files
+│   ├── components/   # React components
+│   ├── pages/        # Page components
+│   ├── styles/       # Global styles
+│   ├── types/        # TypeScript types
+│   └── utils/        # Utility functions
+├── public/           # Static assets
+└── ...
+```
 
-This project is built with:
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## License
+This project is licensed under the ISC License.
 
-## How can I deploy this project?
+## Contact
+For any questions or suggestions, please open an issue in the GitHub repository.
 
-Simply open [Lovable](https://lovable.dev/projects/c5f6b9d3-4de8-4fe8-b524-311ab65d11f1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Acknowledgments
+- Riot Games for Valorant game assets and information
+- All contributors who have helped shape this project
