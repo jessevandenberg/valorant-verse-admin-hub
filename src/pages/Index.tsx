@@ -1,14 +1,49 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import ValorantHome from '@/components/ValorantHome';
+import AdminPanel from '@/components/AdminPanel';
+import AdminAuth from '@/components/AdminAuth';
+
+type ViewState = 'home' | 'admin-login' | 'admin-panel';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [currentView, setCurrentView] = useState<ViewState>('home');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const handleAdminClick = () => {
+    if (isAdmin) {
+      setCurrentView('admin-panel');
+    } else {
+      setCurrentView('admin-login');
+    }
+  };
+
+  const handleLogin = (adminStatus: boolean) => {
+    setIsAdmin(adminStatus);
+    if (adminStatus) {
+      setCurrentView('admin-panel');
+    }
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView('home');
+  };
+
+  switch (currentView) {
+    case 'admin-login':
+      return <AdminAuth onLogin={handleLogin} />;
+    
+    case 'admin-panel':
+      return <AdminPanel onBack={handleBackToHome} />;
+    
+    default:
+      return (
+        <ValorantHome 
+          isAdmin={isAdmin} 
+          onAdminClick={handleAdminClick} 
+        />
+      );
+  }
 };
 
 export default Index;
