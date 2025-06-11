@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -53,7 +54,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply text-foreground font-sans;
+    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--secondary)) 100%);
     min-height: 100vh;
     background-attachment: fixed;
     background-size: cover;
@@ -67,11 +69,11 @@
 
 @layer components {
   .valorant-glow {
-    box-shadow: 0 0 20px rgba(255, 70, 86, 0.3);
+    box-shadow: 0 0 20px rgba(rgb(var(--primary)), 0.3);
   }
   
   .valorant-text-glow {
-    text-shadow: 0 0 10px rgba(255, 70, 86, 0.5);
+    text-shadow: 0 0 10px rgba(rgb(var(--primary)), 0.5);
   }
   
   .admin-button {

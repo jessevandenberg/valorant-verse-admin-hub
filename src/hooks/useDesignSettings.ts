@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +24,63 @@ export const useDesignSettings = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  };
+
+  const applyCSSVariables = (settingName: string, settingValue: string) => {
+    const root = document.documentElement;
+    const rgb = hexToRgb(settingValue);
+    
+    if (!rgb) {
+      console.error('Invalid color value:', settingValue);
+      return;
+    }
+
+    console.log('Applying color:', settingName, settingValue, rgb);
+    
+    switch (settingName) {
+      case 'primary_color':
+        root.style.setProperty('--primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        break;
+      case 'secondary_color':
+        root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        break;
+      case 'accent_color':
+        root.style.setProperty('--accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        break;
+      case 'background_color':
+        root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        
+        // Calculate a slightly lighter version of the background color for the gradient
+        const lighterR = Math.min(rgb.r + 20, 255);
+        const lighterG = Math.min(rgb.g + 20, 255);
+        const lighterB = Math.min(rgb.b + 20, 255);
+        
+        const gradientStyle = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
+        console.log('Applying gradient:', gradientStyle);
+        
+        // Update the body background gradient
+        document.body.style.background = gradientStyle;
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        break;
+    }
+  };
+
   const applyAllColors = (settings: DesignSettings) => {
     Object.entries(settings).forEach(([key, value]) => {
       if (key.includes('_color')) {
@@ -46,8 +104,8 @@ export const useDesignSettings = () => {
         data.forEach(item => {
           settingsObj[item.setting_name] = item.setting_value;
         });
-        setSettings(settingsObj);
-        applyAllColors(settingsObj);
+        setSettings(prev => ({ ...prev, ...settingsObj }));
+        applyAllColors({ ...settings, ...settingsObj });
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -79,7 +137,11 @@ export const useDesignSettings = () => {
       };
       
       setSettings(newSettings);
-      applyAllColors(newSettings);
+      
+      // Apply the specific color change immediately
+      if (settingName.includes('_color')) {
+        applyCSSVariables(settingName, settingValue);
+      }
 
       toast({
         title: "Instelling opgeslagen",
@@ -93,63 +155,6 @@ export const useDesignSettings = () => {
         variant: "destructive"
       });
     }
-  };
-
-  const applyCSSVariables = (settingName: string, settingValue: string) => {
-    const root = document.documentElement;
-    const rgb = hexToRgb(settingValue);
-    
-    if (!rgb) {
-      console.error('Invalid color value:', settingValue);
-      return;
-    }
-
-    console.log('Applying color:', settingName, settingValue, rgb);
-    
-    switch (settingName) {
-      case 'primary_color':
-        root.style.setProperty('--primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        break;
-      case 'secondary_color':
-        root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        break;
-      case 'accent_color':
-        root.style.setProperty('--accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        break;
-      case 'background_color':
-        root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        
-        // Calculate a slightly lighter version of the background color for the gradient
-        const lighterR = Math.min(rgb.r + 20, 255);
-        const lighterG = Math.min(rgb.g + 20, 255);
-        const lighterB = Math.min(rgb.b + 20, 255);
-        
-        const gradientStyle = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
-        console.log('Applying gradient:', gradientStyle);
-        
-        // Update the body background gradient
-        document.body.style.background = gradientStyle;
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        break;
-    }
-  };
-
-  const hexToRgb = (hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
   };
 
   useEffect(() => {
@@ -172,7 +177,9 @@ export const useDesignSettings = () => {
             [setting_name]: setting_value
           };
           setSettings(newSettings);
-          applyAllColors(newSettings);
+          if (setting_name.includes('_color')) {
+            applyCSSVariables(setting_name, setting_value);
+          }
         }
       )
       .subscribe();
