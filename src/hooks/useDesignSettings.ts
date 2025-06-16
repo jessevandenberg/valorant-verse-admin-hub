@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -130,13 +131,35 @@ export const useDesignSettings = () => {
     try {
       console.log('Updating setting:', settingName, settingValue);
       
-      // Update database first
-      const { error } = await supabase
+      // First try to update existing record
+      const { data: existingData, error: selectError } = await supabase
         .from('design_settings')
-        .upsert({ 
-          setting_name: settingName, 
-          setting_value: settingValue 
-        });
+        .select('id')
+        .eq('setting_name', settingName)
+        .single();
+
+      if (selectError && selectError.code !== 'PGRST116') {
+        throw selectError;
+      }
+
+      let error;
+      if (existingData) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('design_settings')
+          .update({ setting_value: settingValue })
+          .eq('setting_name', settingName);
+        error = updateError;
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from('design_settings')
+          .insert({ 
+            setting_name: settingName, 
+            setting_value: settingValue 
+          });
+        error = insertError;
+      }
 
       if (error) throw error;
 
@@ -221,3 +244,4 @@ export const useDesignSettings = () => {
     loadSettings
   };
 };
+
