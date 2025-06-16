@@ -29,26 +29,33 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange }) => 
     '#FFFFFF', // White
   ];
 
+  const handleColorChange = (newColor: string) => {
+    // Ensure color is in proper hex format
+    const cleanColor = newColor.startsWith('#') ? newColor : `#${newColor}`;
+    onChange(cleanColor);
+  };
+
   return (
     <div className="space-y-3">
-      <Label className="text-valorant-white">{label}</Label>
+      <Label className="text-foreground font-medium">{label}</Label>
       
       {/* Preset Colors Grid */}
       <div className="grid grid-cols-5 gap-2">
         {presetColors.map((color) => (
           <Button
             key={color}
-            onClick={() => onChange(color)}
-            className={`w-12 h-12 p-0 border-2 transition-all ${
+            onClick={() => handleColorChange(color)}
+            className={`w-12 h-12 p-0 border-2 transition-all duration-200 hover:scale-110 ${
               value === color 
-                ? 'border-valorant-red shadow-lg scale-110' 
-                : 'border-gray-600 hover:border-valorant-red/50'
+                ? 'border-primary shadow-lg scale-110' 
+                : 'border-border hover:border-primary/50'
             }`}
             style={{ backgroundColor: color }}
             title={color}
+            type="button"
           >
             {value === color && (
-              <div className="w-3 h-3 bg-white rounded-full shadow-md"></div>
+              <div className="w-3 h-3 bg-white rounded-full shadow-md border border-gray-300"></div>
             )}
           </Button>
         ))}
@@ -59,13 +66,13 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange }) => 
         <Input
           type="color"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-16 h-10 p-1 border-valorant-red/30"
+          onChange={(e) => handleColorChange(e.target.value)}
+          className="w-16 h-10 p-1 border-primary/30 cursor-pointer"
         />
         <Input
           value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
+          onChange={(e) => handleColorChange(e.target.value)}
+          className="flex-1 bg-card border-primary/30 text-foreground"
           placeholder="#FF4656"
         />
       </div>

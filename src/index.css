@@ -60,6 +60,7 @@
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
+    transition: background 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -69,18 +70,62 @@
 
 @layer components {
   .valorant-glow {
-    box-shadow: 0 0 20px rgba(rgb(var(--primary)), 0.3);
+    box-shadow: 0 0 20px rgba(var(--primary), 0.3);
+    transition: box-shadow 0.3s ease;
   }
   
   .valorant-text-glow {
-    text-shadow: 0 0 10px rgba(rgb(var(--primary)), 0.5);
+    text-shadow: 0 0 10px rgba(var(--primary), 0.5);
+    transition: text-shadow 0.3s ease;
   }
   
   .admin-button {
-    @apply bg-primary hover:bg-accent text-primary-foreground px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 valorant-glow;
+    background: rgb(var(--primary));
+    color: rgb(var(--primary-foreground));
+    transition: all 0.3s ease;
+  }
+  
+  .admin-button:hover {
+    background: rgb(var(--accent));
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(var(--primary), 0.3);
   }
 
   .bg-gradient {
     background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--secondary)) 100%);
+    transition: background 0.3s ease;
+  }
+
+  /* Update all valorant-specific classes to use CSS variables */
+  .bg-valorant-dark {
+    background-color: rgb(var(--background));
+  }
+  
+  .bg-valorant-light {
+    background-color: rgb(var(--secondary));
+  }
+  
+  .bg-valorant-red {
+    background-color: rgb(var(--primary));
+  }
+  
+  .text-valorant-red {
+    color: rgb(var(--primary));
+  }
+  
+  .text-valorant-white {
+    color: rgb(var(--foreground));
+  }
+  
+  .border-valorant-red {
+    border-color: rgb(var(--primary));
+  }
+  
+  .hover\:bg-valorant-red:hover {
+    background-color: rgb(var(--primary));
+  }
+  
+  .hover\:bg-valorant-accent:hover {
+    background-color: rgb(var(--accent));
   }
 }
