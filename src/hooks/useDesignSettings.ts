@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -23,6 +23,7 @@ export const useDesignSettings = () => {
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const subscriptionRef = useRef<any>(null);
 
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -168,9 +169,15 @@ export const useDesignSettings = () => {
   useEffect(() => {
     loadSettings();
 
-    // Subscribe to real-time updates
-    const subscription = supabase
-      .channel('design_settings_changes')
+    // Clean up any existing subscription
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+    }
+
+    // Subscribe to real-time updates with a unique channel name
+    const channelName = `design_settings_${Date.now()}`;
+    subscriptionRef.current = supabase
+      .channel(channelName)
       .on('postgres_changes', 
         { 
           event: '*', 
@@ -200,7 +207,10 @@ export const useDesignSettings = () => {
       .subscribe();
 
     return () => {
-      subscription.unsubscribe();
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
     };
   }, []);
 
