@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Type, Image, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useDesignSettings } from '@/hooks/useDesignSettings';
+import ColorPicker from './ColorPicker';
 
 interface AdminDesignPopupProps {
   children: React.ReactNode;
@@ -15,13 +17,8 @@ interface AdminDesignPopupProps {
 
 const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
   const { toast } = useToast();
-  const [colors, setColors] = useState({
-    primary: '#FF4656',
-    secondary: '#0F1419',
-    accent: '#F94555',
-    background: '#1E2328'
-  });
-
+  const { settings, updateSetting } = useDesignSettings();
+  
   const [iconSettings, setIconSettings] = useState({
     size: '24',
     style: 'outline'
@@ -33,20 +30,27 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
     fontWeight: 'bold'
   });
 
-  const handleSaveChanges = () => {
-    // In een echte app zou dit de CSS variabelen updaten
-    console.log('Saving design changes:', { colors, iconSettings, textSettings });
-    toast({
-      title: "Design opgeslagen",
-      description: "Je design wijzigingen zijn toegepast.",
-    });
+  const handleColorChange = async (colorType: string, value: string) => {
+    try {
+      await updateSetting(colorType, value);
+    } catch (error) {
+      console.error('Error updating color:', error);
+      toast({
+        title: "Fout bij opslaan",
+        description: "Kon de kleur niet opslaan.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleColorChange = (colorType: string, value: string) => {
-    setColors(prev => ({
-      ...prev,
-      [colorType]: value
-    }));
+  const handleSaveOtherSettings = async () => {
+    // For now, just show a success message for non-color settings
+    // These could be implemented later if needed
+    console.log('Saving other settings:', { iconSettings, textSettings });
+    toast({
+      title: "Instellingen opgeslagen",
+      description: "Je design wijzigingen zijn toegepast.",
+    });
   };
 
   return (
@@ -58,7 +62,7 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
         <DialogHeader>
           <DialogTitle className="text-2xl valorant-text-glow">Design Aanpassen</DialogTitle>
           <DialogDescription className="text-gray-300">
-            Pas het design van je website aan met deze tools.
+            Pas het design van je website aan met deze tools. Kleurveranderingen worden automatisch opgeslagen.
           </DialogDescription>
         </DialogHeader>
 
@@ -79,92 +83,60 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
           </TabsList>
 
           <TabsContent value="colors" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-valorant-white">Primaire Kleur</Label>
-                  <div className="flex gap-2 mt-2">
-                    <Input
-                      type="color"
-                      value={colors.primary}
-                      onChange={(e) => handleColorChange('primary', e.target.value)}
-                      className="w-16 h-10 p-1 border-valorant-red/30"
-                    />
-                    <Input
-                      value={colors.primary}
-                      onChange={(e) => handleColorChange('primary', e.target.value)}
-                      className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                    />
-                  </div>
-                </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <ColorPicker
+                  label="Primaire Kleur"
+                  value={settings.primary_color}
+                  onChange={(value) => handleColorChange('primary_color', value)}
+                />
                 
-                <div>
-                  <Label className="text-valorant-white">Secundaire Kleur</Label>
-                  <div className="flex gap-2 mt-2">
-                    <Input
-                      type="color"
-                      value={colors.secondary}
-                      onChange={(e) => handleColorChange('secondary', e.target.value)}
-                      className="w-16 h-10 p-1 border-valorant-red/30"
-                    />
-                    <Input
-                      value={colors.secondary}
-                      onChange={(e) => handleColorChange('secondary', e.target.value)}
-                      className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                    />
-                  </div>
-                </div>
+                <ColorPicker
+                  label="Secundaire Kleur"
+                  value={settings.secondary_color}
+                  onChange={(value) => handleColorChange('secondary_color', value)}
+                />
               </div>
               
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-valorant-white">Accent Kleur</Label>
-                  <div className="flex gap-2 mt-2">
-                    <Input
-                      type="color"
-                      value={colors.accent}
-                      onChange={(e) => handleColorChange('accent', e.target.value)}
-                      className="w-16 h-10 p-1 border-valorant-red/30"
-                    />
-                    <Input
-                      value={colors.accent}
-                      onChange={(e) => handleColorChange('accent', e.target.value)}
-                      className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                    />
-                  </div>
-                </div>
+              <div className="space-y-6">
+                <ColorPicker
+                  label="Accent Kleur"
+                  value={settings.accent_color}
+                  onChange={(value) => handleColorChange('accent_color', value)}
+                />
                 
-                <div>
-                  <Label className="text-valorant-white">Achtergrond Kleur</Label>
-                  <div className="flex gap-2 mt-2">
-                    <Input
-                      type="color"
-                      value={colors.background}
-                      onChange={(e) => handleColorChange('background', e.target.value)}
-                      className="w-16 h-10 p-1 border-valorant-red/30"
-                    />
-                    <Input
-                      value={colors.background}
-                      onChange={(e) => handleColorChange('background', e.target.value)}
-                      className="flex-1 bg-valorant-dark border-valorant-red/30 text-valorant-white"
-                    />
-                  </div>
-                </div>
+                <ColorPicker
+                  label="Achtergrond Kleur"
+                  value={settings.background_color}
+                  onChange={(value) => handleColorChange('background_color', value)}
+                />
               </div>
             </div>
             
-            <div className="grid grid-cols-4 gap-4 mt-6">
-              {Object.entries(colors).map(([name, color]) => (
-                <div key={name} className="text-center">
-                  <div 
-                    className="w-full h-16 rounded-lg border-2 border-gray-600"
-                    style={{ backgroundColor: color }}
-                  ></div>
-                  <Badge variant="outline" className="mt-2 text-xs text-valorant-white border-valorant-red">
-                    {name}
-                  </Badge>
-                </div>
-              ))}
+            {/* Color Preview */}
+            <div className="mt-8">
+              <h3 className="text-xl font-bold text-valorant-white border-b border-valorant-red/30 pb-2 mb-4">
+                Live Preview
+              </h3>
+              <div className="grid grid-cols-4 gap-4">
+                {[
+                  { name: 'Primair', color: settings.primary_color },
+                  { name: 'Secundair', color: settings.secondary_color },
+                  { name: 'Accent', color: settings.accent_color },
+                  { name: 'Achtergrond', color: settings.background_color }
+                ].map(({ name, color }) => (
+                  <div key={name} className="text-center">
+                    <div 
+                      className="w-full h-16 rounded-lg border-2 border-gray-600 mb-2 transition-all duration-300"
+                      style={{ backgroundColor: color }}
+                    ></div>
+                    <Badge variant="outline" className="text-xs text-valorant-white border-valorant-red">
+                      {name}
+                    </Badge>
+                    <p className="text-xs text-gray-400 mt-1">{color}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </TabsContent>
 
@@ -195,6 +167,16 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
                   ))}
                 </div>
               </div>
+            </div>
+            
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleSaveOtherSettings}
+                className="admin-button"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Icoon Instellingen Opslaan
+              </Button>
             </div>
           </TabsContent>
 
@@ -237,18 +219,18 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
                 </div>
               </div>
             </div>
+            
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleSaveOtherSettings}
+                className="admin-button"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Tekst Instellingen Opslaan
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
-
-        <div className="flex justify-end gap-4 mt-6 pt-4 border-t border-valorant-red/30">
-          <Button 
-            onClick={handleSaveChanges}
-            className="admin-button"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Wijzigingen Opslaan
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
