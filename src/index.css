@@ -96,7 +96,7 @@
     transition: background 0.3s ease;
   }
 
-  /* Update all valorant-specific classes to use CSS variables */
+  /* Fixed valorant-specific classes to use correct CSS variables */
   .bg-valorant-dark {
     background-color: rgb(var(--background));
   }

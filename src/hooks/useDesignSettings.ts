@@ -48,21 +48,25 @@ export const useDesignSettings = () => {
     
     switch (settingName) {
       case 'primary_color':
+        // Alleen button/primaire kleuren
         root.style.setProperty('--primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'secondary_color':
+        // Card en muted kleuren
         root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--muted', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'accent_color':
+        // Alleen accent kleur
         root.style.setProperty('--accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'background_color':
+        // Alleen achtergrond kleuren - NIET primary of button kleuren
         root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
@@ -244,4 +248,3 @@ export const useDesignSettings = () => {
     loadSettings
   };
 };
-
