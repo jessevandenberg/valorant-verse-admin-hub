@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -203,11 +202,15 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
         </h2>
         
         <div className="grid md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
+          {[
+            { src: '/images/gameplay.png', alt: 'Gameplay Screenshot' },
+            { src: '/images/map1.jpeg', alt: 'Map 1 Screenshot' },
+            { src: '/images/map2.jpeg', alt: 'Map 2 Screenshot' }
+          ].map((img, i) => (
             <div key={i} className="relative group overflow-hidden rounded-lg">
               <img 
-                src={`https://images.unsplash.com/photo-${i === 1 ? '1526374965328-7f61d4dc18c5' : i === 2 ? '1500673922987-e212871fec22' : '1470071459604-3b5ec3a7fe05'}?w=600&h=400&fit=crop`}
-                alt={`Valorant Screenshot ${i}`}
+                src={img.src}
+                alt={img.alt}
                 className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-valorant-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
