@@ -1,7 +1,5 @@
 
-
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface DesignSettings {
@@ -13,18 +11,19 @@ interface DesignSettings {
   site_description: string;
 }
 
+const DEFAULT_SETTINGS: DesignSettings = {
+  primary_color: '#FF4656',
+  secondary_color: '#1E2328',
+  accent_color: '#F94555',
+  background_color: '#0F1419',
+  site_title: 'VALORANT',
+  site_description: 'Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.'
+};
+
 export const useDesignSettings = () => {
-  const [settings, setSettings] = useState<DesignSettings>({
-    primary_color: '#FF4656',
-    secondary_color: '#0F1419',
-    accent_color: '#F94555',
-    background_color: '#1E2328',
-    site_title: 'VALORANT',
-    site_description: 'Een 5v5 character-based tactical FPS waar precieze gunplay wordt gecombineerd met unieke Agent abilities.'
-  });
+  const [settings, setSettings] = useState<DesignSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const subscriptionRef = useRef<any>(null);
 
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -56,10 +55,10 @@ export const useDesignSettings = () => {
         break;
       case 'secondary_color':
         // Card en muted kleuren
-        root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--muted', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
+        root.style.setProperty('--secondary', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'accent_color':
         // Alleen accent kleur
@@ -94,38 +93,31 @@ export const useDesignSettings = () => {
     });
   };
 
-  const loadSettings = async () => {
+  const loadSettings = () => {
     try {
-      console.log('Loading settings...');
-      const { data, error } = await supabase
-        .from('design_settings')
-        .select('setting_name, setting_value');
-
-      if (error) throw error;
-
-      if (data && data.length > 0) {
-        console.log('Settings data:', data);
-        const settingsObj: any = { ...settings };
-        data.forEach(item => {
-          settingsObj[item.setting_name] = item.setting_value;
-        });
-        
-        setSettings(settingsObj);
+      console.log('Loading settings from localStorage...');
+      const savedSettings = localStorage.getItem('design_settings');
+      
+      if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings);
+        console.log('Loaded settings:', parsedSettings);
+        setSettings(parsedSettings);
         // Apply colors after state is updated
-        setTimeout(() => applyAllColors(settingsObj), 100);
+        setTimeout(() => applyAllColors(parsedSettings), 100);
       } else {
-        // Apply default colors if no settings in database
-        setTimeout(() => applyAllColors(settings), 100);
+        console.log('No saved settings found, using defaults');
+        // Apply default colors
+        setTimeout(() => applyAllColors(DEFAULT_SETTINGS), 100);
       }
     } catch (error) {
-      console.error('Error loading settings:', error);
+      console.error('Error loading settings from localStorage:', error);
       toast({
         title: "Fout bij laden instellingen",
-        description: "Kon de design instellingen niet laden.",
+        description: "Kon de design instellingen niet laden uit localStorage.",
         variant: "destructive"
       });
       // Apply default colors on error
-      setTimeout(() => applyAllColors(settings), 100);
+      setTimeout(() => applyAllColors(DEFAULT_SETTINGS), 100);
     } finally {
       setLoading(false);
     }
@@ -135,44 +127,15 @@ export const useDesignSettings = () => {
     try {
       console.log('Updating setting:', settingName, settingValue);
       
-      // First try to update existing record
-      const { data: existingData, error: selectError } = await supabase
-        .from('design_settings')
-        .select('id')
-        .eq('setting_name', settingName)
-        .single();
-
-      if (selectError && selectError.code !== 'PGRST116') {
-        throw selectError;
-      }
-
-      let error;
-      if (existingData) {
-        // Update existing record
-        const { error: updateError } = await supabase
-          .from('design_settings')
-          .update({ setting_value: settingValue })
-          .eq('setting_name', settingName);
-        error = updateError;
-      } else {
-        // Insert new record
-        const { error: insertError } = await supabase
-          .from('design_settings')
-          .insert({ 
-            setting_name: settingName, 
-            setting_value: settingValue 
-          });
-        error = insertError;
-      }
-
-      if (error) throw error;
-
       // Update local state
       const newSettings = {
         ...settings,
         [settingName]: settingValue
       };
       setSettings(newSettings);
+      
+      // Save to localStorage
+      localStorage.setItem('design_settings', JSON.stringify(newSettings));
       
       // Apply the specific color change immediately
       if (settingName.includes('_color')) {
@@ -187,7 +150,7 @@ export const useDesignSettings = () => {
       console.error('Error updating setting:', error);
       toast({
         title: "Fout bij opslaan",
-        description: "Kon de instelling niet opslaan.",
+        description: "Kon de instelling niet opslaan in localStorage.",
         variant: "destructive"
       });
     }
@@ -195,50 +158,6 @@ export const useDesignSettings = () => {
 
   useEffect(() => {
     loadSettings();
-
-    // Clean up any existing subscription
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-    }
-
-    // Subscribe to real-time updates with a unique channel name
-    const channelName = `design_settings_${Date.now()}`;
-    subscriptionRef.current = supabase
-      .channel(channelName)
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'design_settings' 
-        }, 
-        (payload) => {
-          console.log('Real-time update received:', payload);
-          if (payload.new) {
-            const { setting_name, setting_value } = payload.new as { setting_name: string; setting_value: string };
-            setSettings(prev => {
-              const newSettings = {
-                ...prev,
-                [setting_name]: setting_value
-              };
-              
-              // Apply color change immediately
-              if (setting_name.includes('_color')) {
-                setTimeout(() => applyCSSVariables(setting_name, setting_value), 50);
-              }
-              
-              return newSettings;
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
   }, []);
 
   return {
