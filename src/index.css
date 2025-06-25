@@ -55,7 +55,7 @@
 
   body {
     @apply text-foreground font-sans;
-    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--secondary)) 100%);
+    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--background)) 100%);
     min-height: 100vh;
     background-attachment: fixed;
     background-size: cover;
@@ -92,17 +92,17 @@
   }
 
   .bg-gradient {
-    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--secondary)) 100%);
+    background: linear-gradient(135deg, rgb(var(--background)) 0%, rgb(var(--background)) 100%);
     transition: background 0.3s ease;
   }
 
-  /* Fixed valorant-specific classes to use correct CSS variables */
+  /* Valorant-specific classes die dynamisch hun kleuren krijgen */
   .bg-valorant-dark {
     background-color: rgb(var(--background));
   }
   
   .bg-valorant-light {
-    background-color: rgb(var(--secondary));
+    background-color: rgb(var(--card));
   }
   
   .bg-valorant-red {

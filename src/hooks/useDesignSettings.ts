@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,7 +53,7 @@ export const useDesignSettings = () => {
         root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'secondary_color':
-        // Card en muted kleuren
+        // Card en muted kleuren - NIET buttons
         root.style.setProperty('--card', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--muted', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
@@ -65,21 +64,34 @@ export const useDesignSettings = () => {
         root.style.setProperty('--accent', `${rgb.r} ${rgb.g} ${rgb.b}`);
         break;
       case 'background_color':
-        // Alleen achtergrond kleuren - NIET primary of button kleuren
+        // Hoofdachtergrond - dit moet de grijze achtergrond vervangen
         root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
         
-        // Update body background gradient immediately
-        const lighterR = Math.min(rgb.r + 15, 255);
-        const lighterG = Math.min(rgb.g + 15, 255);
-        const lighterB = Math.min(rgb.b + 15, 255);
+        // Update body background direct - dit is de belangrijkste wijziging
+        const lighterR = Math.min(rgb.r + 20, 255);
+        const lighterG = Math.min(rgb.g + 20, 255);
+        const lighterB = Math.min(rgb.b + 20, 255);
         
-        const gradientStyle = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
-        document.body.style.background = gradientStyle;
+        // Zet de body achtergrond direct
+        document.body.style.background = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundRepeat = 'no-repeat';
+        
+        // Update ook alle elementen die bg-gradient gebruiken
+        const gradientElements = document.querySelectorAll('.bg-gradient, .bg-gradient-to-br');
+        gradientElements.forEach(element => {
+          (element as HTMLElement).style.background = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
+        });
+        
+        // Update valorant-dark klassen
+        const darkElements = document.querySelectorAll('.bg-valorant-dark');
+        darkElements.forEach(element => {
+          (element as HTMLElement).style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        });
+        
         break;
     }
   };
