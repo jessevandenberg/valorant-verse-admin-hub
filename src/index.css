@@ -105,6 +105,20 @@
     background-color: rgb(var(--card));
   }
   
+  /* Opacity variants for secondary surfaces */
+  .bg-valorant-light-30 {
+    background-color: rgb(var(--card) / 0.3);
+    transition: background-color 0.3s ease;
+  }
+  .bg-valorant-light-50 {
+    background-color: rgb(var(--card) / 0.5);
+    transition: background-color 0.3s ease;
+  }
+  .bg-valorant-light-90 {
+    background-color: rgb(var(--card) / 0.9);
+    transition: background-color 0.3s ease;
+  }
+  
   .bg-valorant-red {
     background-color: rgb(var(--primary));
   }

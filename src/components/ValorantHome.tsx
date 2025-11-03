@@ -156,7 +156,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {content.features.map((feature, index) => (
-            <Card key={index} className="bg-valorant-light/50 border border-valorant-accent hover:border-valorant-accent transition-all duration-300 transform hover:scale-105">
+            <Card key={index} className="bg-valorant-light-50 border border-valorant-accent hover:border-valorant-accent transition-all duration-300 transform hover:scale-105">
               <CardHeader className="text-center">
                 <div className="mx-auto mb-4 text-valorant-accent">
                   {getIcon(feature.icon)}
@@ -174,7 +174,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       </section>
 
       {/* Gameplay Section */}
-      <section className="py-16 bg-valorant-light/30">
+      <section className="py-16 bg-valorant-light-30">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 valorant-text-glow">
             Gameplay Highlights
@@ -220,7 +220,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       </section>
 
       {/* News Section */}
-      <section className="py-16 bg-valorant-light/30">
+      <section className="py-16 bg-valorant-light-30">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 valorant-text-glow">
             Laatste Nieuws
@@ -232,7 +232,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
               { title: "Map Update: Ascent Rework", date: "2024-05-28", category: "Map Updates" },
               { title: "Competitive Season 8", date: "2024-05-25", category: "Competitive" }
             ].map((news, index) => (
-              <Card key={index} className="bg-valorant-light/50 border-valorant-red/30 hover:border-valorant-red transition-all duration-300">
+              <Card key={index} className="bg-valorant-light-50 border-valorant-red/30 hover:border-valorant-red transition-all duration-300">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
                     <Badge variant="outline" className="text-valorant-red border-valorant-red">

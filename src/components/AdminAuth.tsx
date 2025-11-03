@@ -45,7 +45,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-valorant-dark via-valorant-light to-valorant-dark flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-valorant-light/90 border-valorant-red/30">
+      <Card className="w-full max-w-md bg-valorant-light-90 border-valorant-red/30">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-valorant-red/20 rounded-full flex items-center justify-center">
             <Shield className="w-8 h-8 text-valorant-red" />
