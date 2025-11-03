@@ -148,6 +148,26 @@
     border-color: rgb(var(--accent));
   }
   
+  /* Secondary helpers mapping to --secondary (naast card) */
+  .bg-valorant-secondary {
+    background-color: rgb(var(--secondary));
+  }
+  .bg-valorant-secondary-30 {
+    background-color: rgb(var(--secondary) / 0.3);
+    transition: background-color 0.3s ease;
+  }
+  .bg-valorant-secondary-50 {
+    background-color: rgb(var(--secondary) / 0.5);
+    transition: background-color 0.3s ease;
+  }
+  .bg-valorant-secondary-80 {
+    background-color: rgb(var(--secondary) / 0.8);
+    transition: background-color 0.3s ease;
+  }
+  .border-valorant-secondary {
+    border-color: rgb(var(--secondary));
+  }
+  
   .hover\:bg-valorant-red:hover {
     background-color: rgb(var(--primary));
   }

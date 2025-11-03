@@ -196,26 +196,28 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       </section>
 
       {/* Screenshots/Media Section */}
-      <section className="py-16 container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12 valorant-text-glow">
-          Game Screenshots
-        </h2>
-        
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { src: '/images/gameplay.png', alt: 'Gameplay Screenshot' },
-            { src: '/images/map1.jpeg', alt: 'Map 1 Screenshot' },
-            { src: '/images/map2.jpeg', alt: 'Map 2 Screenshot' }
-          ].map((img, i) => (
-            <div key={i} className="relative group overflow-hidden rounded-lg">
-              <img 
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-valorant-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-          ))}
+      <section className="py-16 bg-valorant-light-30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12 valorant-text-glow">
+            Game Screenshots
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { src: '/images/gameplay.png', alt: 'Gameplay Screenshot' },
+              { src: '/images/map1.jpeg', alt: 'Map 1 Screenshot' },
+              { src: '/images/map2.jpeg', alt: 'Map 2 Screenshot' }
+            ].map((img, i) => (
+              <div key={i} className="relative group overflow-hidden rounded-lg bg-valorant-light-50">
+                <img 
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-valorant-red/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -235,7 +237,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
               <Card key={index} className="bg-valorant-light-50 border-valorant-red/30 hover:border-valorant-red transition-all duration-300">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
-                    <Badge variant="outline" className="text-valorant-red border-valorant-red">
+                    <Badge variant="outline" className="bg-valorant-light-50 text-valorant-white border-transparent">
                       {news.category}
                     </Badge>
                     <span className="text-sm text-gray-400">{news.date}</span>
@@ -254,7 +256,7 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-valorant-red/30">
+      <footer className="py-8 bg-valorant-light-30 border-t border-valorant-red/30">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-400">
             © 2024 Riot Games, Inc. VALORANT en alle gerelateerde karakters zijn handelsmerken van Riot Games, Inc.
