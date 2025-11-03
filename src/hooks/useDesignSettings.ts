@@ -51,33 +51,6 @@ export const useDesignSettings = () => {
         root.style.setProperty('--ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-primary', `${rgb.r} ${rgb.g} ${rgb.b}`);
         root.style.setProperty('--sidebar-ring', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        
-        // Ook de achtergrond laten volgen met de primaire kleur
-        root.style.setProperty('--background', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--sidebar-background', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        root.style.setProperty('--popover', `${rgb.r} ${rgb.g} ${rgb.b}`);
-        
-        // Direct de body achtergrond bijwerken naar de primaire kleur
-        {
-          const lighterR = Math.min(rgb.r + 20, 255);
-          const lighterG = Math.min(rgb.g + 20, 255);
-          const lighterB = Math.min(rgb.b + 20, 255);
-          
-          document.body.style.background = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
-          document.body.style.backgroundAttachment = 'fixed';
-          document.body.style.backgroundSize = 'cover';
-          document.body.style.backgroundRepeat = 'no-repeat';
-          
-          const gradientElements = document.querySelectorAll('.bg-gradient, .bg-gradient-to-br');
-          gradientElements.forEach(element => {
-            (element as HTMLElement).style.background = `linear-gradient(135deg, rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) 0%, rgb(${lighterR}, ${lighterG}, ${lighterB}) 100%)`;
-          });
-          
-          const darkElements = document.querySelectorAll('.bg-valorant-dark');
-          darkElements.forEach(element => {
-            (element as HTMLElement).style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-          });
-        }
         break;
       case 'secondary_color':
         // Card en muted kleuren - NIET buttons

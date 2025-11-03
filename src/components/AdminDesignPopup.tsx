@@ -86,13 +86,13 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <ColorPicker
-                  label="Primaire Kleur"
+                  label="Primaire Kleur (Buttons & Ring)"
                   value={settings.primary_color}
                   onChange={(value) => handleColorChange('primary_color', value)}
                 />
                 
                 <ColorPicker
-                  label="Secundaire Kleur"
+                  label="Secundaire Kleur (Cards & Secundaire vlakken)"
                   value={settings.secondary_color}
                   onChange={(value) => handleColorChange('secondary_color', value)}
                 />
@@ -100,13 +100,13 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
               
               <div className="space-y-6">
                 <ColorPicker
-                  label="Accent Kleur"
+                  label="Accent Kleur (Highlights)"
                   value={settings.accent_color}
                   onChange={(value) => handleColorChange('accent_color', value)}
                 />
                 
                 <ColorPicker
-                  label="Achtergrond Kleur"
+                  label="Achtergrond Kleur (Pagina Achtergrond)"
                   value={settings.background_color}
                   onChange={(value) => handleColorChange('background_color', value)}
                 />
@@ -136,6 +136,14 @@ const AdminDesignPopup: React.FC<AdminDesignPopupProps> = ({ children }) => {
                     <p className="text-xs text-gray-400 mt-1">{color}</p>
                   </div>
                 ))}
+              </div>
+              <div className="mt-6 space-y-3">
+                <p className="text-sm text-gray-300">Button Preview</p>
+                <div className="flex flex-wrap gap-3">
+                  <Button className="admin-button">Primair</Button>
+                  <Button variant="secondary">Secundair</Button>
+                  <Button variant="outline" className="border-valorant-red text-valorant-red hover:bg-valorant-red hover:text-white">Outline</Button>
+                </div>
               </div>
             </div>
           </TabsContent>
