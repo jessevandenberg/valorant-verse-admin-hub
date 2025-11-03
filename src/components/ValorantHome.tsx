@@ -156,9 +156,9 @@ const ValorantHome: React.FC<ValorantHomeProps> = ({ isAdmin = false, onAdminCli
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {content.features.map((feature, index) => (
-            <Card key={index} className="bg-valorant-light/50 border-valorant-red/30 hover:border-valorant-red transition-all duration-300 transform hover:scale-105">
+            <Card key={index} className="bg-valorant-light/50 border border-valorant-accent hover:border-valorant-accent transition-all duration-300 transform hover:scale-105">
               <CardHeader className="text-center">
-                <div className="mx-auto mb-4 text-valorant-red">
+                <div className="mx-auto mb-4 text-valorant-accent">
                   {getIcon(feature.icon)}
                 </div>
                 <CardTitle className="text-valorant-white">{feature.title}</CardTitle>

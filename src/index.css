@@ -109,8 +109,17 @@
     background-color: rgb(var(--primary));
   }
   
+  /* Accent helpers so UI kan meeverven met accent kleur */
+  .bg-valorant-accent {
+    background-color: rgb(var(--accent));
+  }
+  
   .text-valorant-red {
     color: rgb(var(--primary));
+  }
+  
+  .text-valorant-accent {
+    color: rgb(var(--accent));
   }
   
   .text-valorant-white {
@@ -119,6 +128,10 @@
   
   .border-valorant-red {
     border-color: rgb(var(--primary));
+  }
+  
+  .border-valorant-accent {
+    border-color: rgb(var(--accent));
   }
   
   .hover\:bg-valorant-red:hover {
