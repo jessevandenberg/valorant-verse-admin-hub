@@ -1,15 +1,22 @@
 # Valorant Info Website
 
 ## Overzicht
-Deze website dient als een moderne, interactieve platform voor Valorant-informatie en -updates. Gebouwd met moderne webtechnologieën, biedt het een aantrekkelijke gebruikerservaring met vloeiende animaties en een strakke, intuïtieve interface. Het project toont Valorant game-data, agent-informatie en updates op een toegankelijke en visueel aantrekkelijke manier.
+Deze website is een moderne, interactieve Valorant-site met een aanpasbaar thema en duidelijke secties voor features, media en nieuws. Hieronder lees je precies wat je kunt doen en hoe alles is gebouwd.
 
-## Belangrijkste functies
-- **Interactieve animaties**: Vloeiende, scroll-gebaseerde animaties met Framer Motion
-- **Responsief ontwerp**: Geoptimaliseerd voor alle apparaten, van mobiel tot desktop
-- **Moderne UI-componenten**: Gemaakt met React en gestyled met Tailwind CSS
-- **Prestaties geoptimaliseerd**: Snelle laadtijden en soepele interacties
-- **Dynamische content**: Real-time updates via Supabase-integratie
-- **Aanpasbaar thema**: Dynamisch kleurbeheer via het admin-paneel
+## Wat kun je doen?
+- ️ Startpagina: lees wat VALORANT uniek maakt en bekijk gameplay-highlights.
+- Media: bekijk screenshots met hover-animaties.
+- Nieuws: bekijk een grid met recente nieuwsitems.
+- Admin: pas live het thema aan (primaire, secundaire, accent en achtergrondkleur) en zie direct resultaat.
+
+## Hoe werkt het thema?
+- Kleuren worden beheerd via CSS-variabelen in `src/index.css` (bijv. `--primary`, `--secondary`, `--accent`, `--background`).
+- De hook `useDesignSettings` slaat wijzigingen op in `localStorage` en past de variabelen direct toe op `document.documentElement`.
+- Effect per kleurpalet:
+  - Primaire: knoppen, links en focus-ring.
+  - Secundaire: kaarten en secundaire vlakken/secties (via `bg-valorant-light-*`).
+  - Accent: highlights en randen/icoonkleuren (bijv. features-kaarten).
+  - Achtergrond: pagina-achtergrond (gradient), popovers en sidebar-background.
 
 ## Technologiestack
 ### Frontend
@@ -22,10 +29,7 @@ Deze website dient als een moderne, interactieve platform voor Valorant-informat
 - Shadcn UI-componenten
 
 ### Backend & Database
-- Supabase
-  - Real-time abonnementen
-  - Databasemanagement
-  - Authenticatie
+- Supabase (client aanwezig, optioneel voor real-time/data)
 
 ### Ontwikkeltools
 - Visual Studio Code
@@ -69,6 +73,30 @@ Open vervolgens je browser en ga naar `http://localhost:5173`.
 | `npm run build` | Maakt een productie-build |
 | `npm run preview` | Toont de productie-build lokaal |
 | `npm run lint` | Voert de linter uit om codekwaliteit te controleren |
+
+## Belangrijke onderdelen (hoe het is gebouwd)
+- `src/hooks/useDesignSettings.ts`: laadt/slaat thema-instellingen op en zet CSS-variabelen; past ook body-gradient aan.
+- `src/index.css`: kleurensysteem met CSS-variabelen en helpers zoals `bg-valorant-light-30/50/90`, `text-valorant-accent`.
+- `src/components/AdminDesignPopup.tsx`: admin UI voor kleur- en typografie-instellingen; wijzigingen zijn direct zichtbaar.
+- `src/components/ValorantHome.tsx`: hoofdcontent (hero, features, gameplay, media, nieuws) met themakoppeling.
+
+## Projectstructuur (beknopt)
+```
+valorant-verse-admin-hub/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── ui/                 # Shadcn UI
+│   │   ├── AdminDesignPopup.tsx
+│   │   └── ValorantHome.tsx
+│   ├── hooks/
+│   │   └── useDesignSettings.ts
+│   ├── integrations/
+│   │   └── supabase/
+│   ├── index.css
+│   └── main.tsx
+└── vite.config.ts
+```
 
 ## Projectstructuur
 ```
