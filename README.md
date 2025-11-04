@@ -1,17 +1,17 @@
 # Valorant Info Website
 
-## Overview
-This website serves as a modern, interactive platform for Valorant information and updates. Built with cutting-edge web technologies, it provides an engaging user experience through smooth animations and a clean, intuitive interface. The project showcases Valorant game data, agent information, and updates in an accessible and visually appealing manner.
+## Overzicht
+Deze website dient als een moderne, interactieve platform voor Valorant-informatie en -updates. Gebouwd met moderne webtechnologieën, biedt het een aantrekkelijke gebruikerservaring met vloeiende animaties en een strakke, intuïtieve interface. Het project toont Valorant game-data, agent-informatie en updates op een toegankelijke en visueel aantrekkelijke manier.
 
-## Key Features
-- **Interactive Animations**: Smooth scroll-based animations using Framer Motion
-- **Responsive Design**: Optimized for all devices from mobile to desktop
-- **Modern UI Components**: Built with React and styled using Tailwind CSS
-- **Performance Optimized**: Fast loading times and smooth interactions
-- **Dynamic Content**: Real-time updates through Supabase integration
-- **Customizable Theme**: Dynamic color scheme management through admin panel
+## Belangrijkste functies
+- **Interactieve animaties**: Vloeiende, scroll-gebaseerde animaties met Framer Motion
+- **Responsief ontwerp**: Geoptimaliseerd voor alle apparaten, van mobiel tot desktop
+- **Moderne UI-componenten**: Gemaakt met React en gestyled met Tailwind CSS
+- **Prestaties geoptimaliseerd**: Snelle laadtijden en soepele interacties
+- **Dynamische content**: Real-time updates via Supabase-integratie
+- **Aanpasbaar thema**: Dynamisch kleurbeheer via het admin-paneel
 
-## Technology Stack
+## Technologiestack
 ### Frontend
 - Vite
 - React 18
@@ -19,79 +19,79 @@ This website serves as a modern, interactive platform for Valorant information a
 - Tailwind CSS
 - Framer Motion
 - React Icons
-- Shadcn UI Components
+- Shadcn UI-componenten
 
 ### Backend & Database
 - Supabase
-  - Real-time subscriptions
-  - Database management
-  - Authentication
+  - Real-time abonnementen
+  - Databasemanagement
+  - Authenticatie
 
-### Development Tools
+### Ontwikkeltools
 - Visual Studio Code
 - Git & GitHub
 - NPM
 
-## Installation
+## Installatie
 
-### Prerequisites
-Ensure you have the following installed:
-- Node.js (LTS version)
-- npm (comes with Node.js)
+### Vereisten
+Zorg dat je het volgende hebt geïnstalleerd:
+- Node.js (LTS-versie)
+- npm (wordt meegeleverd met Node.js)
 
-### Steps
-1. Clone the repository
+### Stappen
+1. Repository klonen
 ```bash
 git clone https://github.com/yourusername/valorant-info.git
 cd valorant-info
 ```
 
-2. Install dependencies
+2. Dependencies installeren
 ```bash
 npm install
 ```
 
-3. Start the development server
+3. Development server starten
 ```bash
 npm run dev
 ```
-Open your browser and navigate to `http://localhost:5173`
+Open vervolgens je browser en ga naar `http://localhost:5173`.
 
-## Configuration
-- Environment variables can be added in `.env` file
-- Vite configuration can be modified in `vite.config.ts`
-- Tailwind CSS configuration is available in `tailwind.config.js`
+## Configuratie
+- Omgevingsvariabelen kunnen worden toegevoegd in het bestand `.env`.
+- Vite-configuratie kan worden aangepast in `vite.config.ts`.
+- Tailwind CSS-configuratie is beschikbaar in `tailwind.config.js`.
 
-## Available Scripts
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Starts the development server |
-| `npm run build` | Creates a production build |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Runs the linter to check code quality |
+## Beschikbare scripts
+| Commando | Beschrijving |
+|---------|---------------|
+| `npm run dev` | Start de development server |
+| `npm run build` | Maakt een productie-build |
+| `npm run preview` | Toont de productie-build lokaal |
+| `npm run lint` | Voert de linter uit om codekwaliteit te controleren |
 
-## Project Structure
+## Projectstructuur
 ```
 valorant-info/
-├── src/              # Source files
-│   ├── components/   # React components
-│   ├── pages/        # Page components
-│   ├── styles/       # Global styles
-│   ├── types/        # TypeScript types
-│   └── utils/        # Utility functions
-├── public/           # Static assets
+├── src/              # Bronbestanden
+│   ├── components/   # React-componenten
+│   ├── pages/        # Pagina-componenten
+│   ├── styles/       # Globale stijlen
+│   ├── types/        # TypeScript-typen
+│   └── utils/        # Hulpfuncties
+├── public/           # Statische assets
 └── ...
 ```
 
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+## Bijdragen
+Bijdragen zijn welkom! Dien gerust een Pull Request in. Voor grotere wijzigingen, open eerst een issue om te bespreken wat je wilt veranderen.
 
-## License
-This project is licensed under the ISC License.
+## Licentie
+Dit project is gelicentieerd onder de ISC-licentie.
 
 ## Contact
-For any questions or suggestions, please open an issue in the GitHub repository.
+Voor vragen of suggesties kun je een issue openen in de GitHub-repository.
 
-## Acknowledgments
-- Riot Games for Valorant game assets and information
-- All contributors who have helped shape this project
+## Erkenningen
+- Riot Games voor Valorant-game-assets en -informatie
+- Alle bijdragers die hebben geholpen dit project vorm te geven
